@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}User Activities - E-Music{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Your Activities</h2>
+        <div class="list-group mt-3">
+            {% for activity in activities %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ activity.activity_type|title }}</h5>
+                    <p class="mb-1">{{ activity.description }}</p>
+                    <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                </div>
+            {% empty %}
+                <div class="list-group-item">No activities recorded yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

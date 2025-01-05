@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load duration_filters %}
+
+{% block title %}{{ track.name }} - E-Music{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ track.image_url }}" alt="{{ track.name }}" class="img-fluid rounded mb-3">
+                <h1 class="h2 mb-3">{{ track.name }}</h1>
+                <p class="text-muted">
+                    By
+                    {% for artist in artists %}
+                        <a href="{{ artist.url }}">{{ artist.name }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p>Album: {{ track.album }}</p>
+                <p>Duration: {{ track.duration|duration_format }} sec</p>
+                {% if track.preview_url %}
+                    <audio controls src="{{ track.preview_url }}" class="w-100">
+                        Your browser does not support the audio element.
+                    </audio>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h2 class="h4 mb-3">Audio Features</h2>
+                {% if track.audio_features %}
+                    <div class="row">
+                        {% for feature, value in track.audio_features.items %}
+                            <div class="col-md-4 mb-3">
+                                <h5 class="h6">{{ feature|title }}</h5>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ value|multiply:100 }}%"
+                                         aria-valuenow="{{ value|multiply:100 }}" aria-valuemin="0"
+                                         aria-valuemax="100">
+                                        {{ value|floatformat:2 }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No audio features available for this track.</p>
+                {% endif %}
+                <h2 class="h4 mt-4 mb-3">Similar Tracks</h2>
+                <div class="list-group">
+                    {% for track in recommendations %}
+                        <a href="{% url 'track_redirection' track.name %}"
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ track.name }}</h5>
+                                <small>{{ track.artist }}</small>
+                            </div>
+                            <p class="mb-1">{{ track.album }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

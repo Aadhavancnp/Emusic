@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-4">
+                {% if artist.images.0.url %}
+                    <img src="{{ artist.images.0.url }}" alt="{{ artist.name }}" class="img-fluid rounded mb-3">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <h1 class="display-4 mb-4">{{ artist.name }}</h1>
+                <p class="lead">Genres: {{ artist.genres|join:", " }}</p>
+                <p>Popularity: {{ artist.popularity }}</p>
+            </div>
+        </div>
+
+        <h2 class="mt-5 mb-4">Top Tracks</h2>
+        <div class="row">
+            {% for track in top_tracks %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title h5">{{ track.name }}</h3>
+                            <p class="card-text">{{ track.album.name }}</p>
+                        </div>
+                        <div class="card-footer">
+                            {% if track.preview_url %}
+                                <audio controls class="w-100">
+                                    <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% else %}
+                                <p class="text-muted">No preview available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="mt-5 mb-4">Albums</h2>
+        <div class="row">
+            {% for album in albums %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if album.image_url %}
+                            <img src="{{ album.image_url }}" class="card-img-top" alt="{{ album.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h3 class="card-title h5">{{ album.name }}</h3>
+                            <p class="card-text">Release Date: {{ album.release_date }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {#        <h2 class="mt-5 mb-4">Related Artists</h2>#}
+        {#        <div class="row">#}
+        {#            {% for related_artist in artist.related_artists %}#}
+        {#                <div class="col-md-4 mb-4">#}
+        {#                    <div class="card">#}
+        {#                        {% if related_artist.image_url %}#}
+        {#                            <img src="{{ related_artist.image_url }}" class="card-img-top"#}
+        {#                                 alt="{{ related_artist.name }}">#}
+        {#                        {% endif %}#}
+        {#                        <div class="card-body">#}
+        {#                            <h3 class="card-title h5">{{ related_artist.name }}</h3>#}
+        {#                            <a href="{% url 'artist_detail' related_artist.id %}" class="btn btn-primary">View#}
+        {#                                Details</a>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            {% endfor %}#}
+        {#        </div>#}
+    </div>
+{% endblock %}
+

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1 class="display-4 mb-4">{{ playlist.name }}</h1>
+        <p class="lead">{{ playlist.description }}</p>
+        <p>{{ playlist.tracks|length }} tracks</p>
+
+        <div class="row">
+            {% for track in playlist.tracks %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title h5">{{ track.name }}</h2>
+                            <p class="card-text">{{ track.artist }}</p>
+                            <p class="card-text"><small class="text-muted">{{ track.album }}</small></p>
+                        </div>
+                        <div class="card-footer">
+                            {% if track.preview_url %}
+                                <audio controls class="w-100">
+                                    <source src="{{ track.preview_url }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% else %}
+                                <p class="text-muted">No preview available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <p>This playlist is empty. Add some tracks to get started!</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
