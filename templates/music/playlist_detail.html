@@ -9,11 +9,11 @@
         <div class="row">
             {% for track in playlist.tracks %}
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card">
+                    <div class="card bg-body-tertiary">
                         <div class="card-body">
                             <h2 class="card-title h5">{{ track.name }}</h2>
                             <p class="card-text">{{ track.artist }}</p>
-                            <p class="card-text"><small class="text-muted">{{ track.album }}</small></p>
+                            <p class="card-text"><small class="text-body-secondary">{{ track.album }}</small></p>
                         </div>
                         <div class="card-footer">
                             {% if track.preview_url %}
@@ -22,7 +22,7 @@
                                     Your browser does not support the audio element.
                                 </audio>
                             {% else %}
-                                <p class="text-muted">No preview available</p>
+                                <p class="text-body-secondary">No preview available</p>
                             {% endif %}
                         </div>
                     </div>

@@ -7,6 +7,16 @@
         <h2 class="mb-4">User Preferences</h2>
         <form method="post">
             {% csrf_token %}
+            <div class="mb-3">
+                <label for="theme" class="form-label">Theme Preference</label>
+                <select name="theme" id="theme" class="form-select">
+                    <option value="light" {% if user.userprofile.theme_preference == 'light' %}selected{% endif %}>
+                        Light
+                    </option>
+                    <option value="dark" {% if user.userprofile.theme_preference == 'dark' %}selected{% endif %}>Dark
+                    </option>
+                </select>
+            </div>
             {% for field in form %}
                 <div class="mb-3">
                     {{ field.label_tag }}

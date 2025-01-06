@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'music.apps.MusicConfig',
     'users.apps.UsersConfig',
     'subscription.apps.SubscriptionConfig',
-    'notifications.apps.NotificationsConfig',
     "bootstrap_datepicker_plus"
 ]
 
@@ -55,9 +54,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'EMusic.urls'
 
-SPOTIFY_CLIENT_ID = "xxx"
-SPOTIFY_CLIENT_SECRET = "xxx"
-SPOTIFY_REDIRECT_URI = "xxx"
+SPOTIFY_CLIENT_ID = "XXXXX"
+SPOTIFY_CLIENT_SECRET = "XXXXX"
+SPOTIFY_REDIRECT_URI = "http://127.0.0.1:8000/music/callback"
 
 LOGIN_URL = '/users/login/'
 

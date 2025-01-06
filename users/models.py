@@ -15,10 +15,11 @@ class CustomUser(AbstractUser):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(upload_to='profile_pics/', default="default.jpg")
+    profile_picture = models.ImageField(upload_to='profile_pics/', default="profile_pics/default.jpg")
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    theme_preference = models.CharField(max_length=10, choices=[('light', 'Light'), ('dark', 'Dark')], default='light')
 
     def __str__(self):
         return f'{self.user.username} Profile'

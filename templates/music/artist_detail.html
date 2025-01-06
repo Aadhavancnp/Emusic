@@ -19,7 +19,7 @@
         <div class="row">
             {% for track in top_tracks %}
                 <div class="col-md-6 mb-4">
-                    <div class="card">
+                    <div class="card bg-body-tertiary">
                         <div class="card-body">
                             <h3 class="card-title h5">{{ track.name }}</h3>
                             <p class="card-text">{{ track.album.name }}</p>
@@ -31,7 +31,7 @@
                                     Your browser does not support the audio element.
                                 </audio>
                             {% else %}
-                                <p class="text-muted">No preview available</p>
+                                <p class="text-body-secondary">No preview available</p>
                             {% endif %}
                         </div>
                     </div>
@@ -43,7 +43,7 @@
         <div class="row">
             {% for album in albums %}
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card bg-body-tertiary">
                         {% if album.image_url %}
                             <img src="{{ album.image_url }}" class="card-img-top" alt="{{ album.name }}">
                         {% endif %}

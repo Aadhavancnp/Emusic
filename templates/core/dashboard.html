@@ -1,181 +1,3 @@
-{#{% extends 'base.html' %}#}
-{##}
-{#{% block title %}Dashboard - E-Music{% endblock %}#}
-{##}
-{#{% block content %}#}
-{#    <div class="container mt-4">#}
-{#        <div class="row">#}
-{#            <div class="col-md-8">#}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <div class="d-flex align-items-center">#}
-{#                            {% if user.userprofile.profile_picture %}#}
-{#                                <img src="{{ user.userprofile.profile_picture.url }}"#}
-{#                                     class="card-img-top rounded-circle"#}
-{#                                     style="width: 6rem; height: 6rem"#}
-{#                                     alt="{{ user.username }}'s profile picture">#}
-{#                            {% else %}#}
-{#                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"#}
-{#                                     style="width: 4rem; height: 4rem; font-size: 2rem;">#}
-{#                                    {{ user.username|make_list|first|upper }}#}
-{#                                </div>#}
-{#                            {% endif %}#}
-{#                            <div class="ms-3">#}
-{#                                <h2 class="card-title">Welcome, {{ user.username }}!</h2>#}
-{#                                <p class="card-text">Here's your personalized music dashboard.</p>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <h3 class="card-title">Recommended for You</h3>#}
-{#                        <div class="row">#}
-{#                            {% for song in recommended_songs %}#}
-{#                                <div class="col-md-4 mb-3">#}
-{#                                    <div class="card">#}
-{#                                        <div class="card-body">#}
-{#                                            <h5 class="card-title">{{ song.name }}</h5>#}
-{#                                            <p class="card-text">#}
-{#                                                {{ song.artist }}#}
-{#                                                <br/>#}
-{#                                                <span>{{ song.album }}</span>#}
-{#                                            </p>#}
-{#                                            <a href="{% url 'track_detail' song.id %}" class="btn btn-primary btn-sm">View#}
-{#                                                Details</a>#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <h3 class="card-title">Your Playlists</h3>#}
-{#                        <div class="row">#}
-{#                            {% for playlist in playlists %}#}
-{#                                <div class="col-md-4 mb-3">#}
-{#                                    <div class="card">#}
-{#                                        <div class="card-body">#}
-{#                                            <h5 class="card-title">{{ playlist.name }}</h5>#}
-{#                                            <p class="card-text">{{ playlist.tracks|length }} tracks</p>#}
-{#                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal"#}
-{#                                                    data-bs-target="#playlistModal{{ forloop.counter }}">#}
-{#                                                View Tracks#}
-{#                                            </button>#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <!-- Modal for playlist tracks -->#}
-{#                                <div class="modal fade" id="playlistModal{{ forloop.counter }}" tabindex="-1"#}
-{#                                     aria-labelledby="playlistModalLabel{{ forloop.counter }}" aria-hidden="true">#}
-{#                                    <div class="modal-dialog modal-lg">#}
-{#                                        <div class="modal-content">#}
-{#                                            <div class="modal-header">#}
-{#                                                <h5 class="modal-title"#}
-{#                                                    id="playlistModalLabel{{ forloop.counter }}">{{ playlist.name }}#}
-{#                                                    Tracks</h5>#}
-{#                                                <button type="button" class="btn-close" data-bs-dismiss="modal"#}
-{#                                                        aria-label="Close"></button>#}
-{#                                            </div>#}
-{#                                            <div class="modal-body">#}
-{#                                                <ul class="list-group">#}
-{#                                                    {% for track in playlist.tracks %}#}
-{#                                                        <li class="list-group-item">#}
-{#                                                            <strong>{{ track.name }}</strong> - {{ track.artist }}#}
-{#                                                            <br>#}
-{#                                                            <small class="text-muted">Album: {{ track.album }} |#}
-{#                                                                Duration: {{ track.duration|floatformat:2 }}#}
-{#                                                                minutes</small>#}
-{#                                                        </li>#}
-{#                                                    {% endfor %}#}
-{#                                                </ul>#}
-{#                                            </div>#}
-{#                                        </div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <div class="col-md-4">#}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <h3 class="card-title">Your Stats</h3>#}
-{#                        <ul class="list-group list-group-flush">#}
-{#                            <li class="list-group-item">#}
-{#                                <strong>Listening Time:</strong> {{ listening_time|floatformat:2 }} hours#}
-{#                            </li>#}
-{#                            <li class="list-group-item">#}
-{#                                <strong>Favorite Genre:</strong> {{ favorite_genre|default:"Not enough data" }}#}
-{#                            </li>#}
-{#                            <li class="list-group-item">#}
-{#                                <strong>Playlist Count:</strong> {{ playlist_count }}#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <h3 class="card-title">Recent Activity</h3>#}
-{#                        <ul class="list-group list-group-flush">#}
-{#                            {% for activity in recent_activities %}#}
-{#                                <li class="list-group-item">#}
-{#                                    {{ activity.description }}#}
-{#                                    <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>#}
-{#                                </li>#}
-{#                            {% endfor %}#}
-{#                        </ul>#}
-{#                        <a href="{% url 'user_activities' %}" class="btn btn-primary btn-sm mt-3">View All#}
-{#                            Activities</a>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <h3 class="card-title">Notifications</h3>#}
-{#                        <ul class="list-group list-group-flush">#}
-{#                            {% for notification in notifications %}#}
-{#                                <li class="list-group-item">#}
-{#                                    {{ notification.message }}#}
-{#                                    <small class="text-muted">{{ notification.created_at|timesince }} ago</small>#}
-{#                                </li>#}
-{#                            {% empty %}#}
-{#                                <li class="list-group-item">No new notifications</li>#}
-{#                            {% endfor %}#}
-{#                        </ul>#}
-{#                        <a href="{% url 'notifications' %}" class="btn btn-primary btn-sm mt-3">View All#}
-{#                            Notifications</a>#}
-{#                    </div>#}
-{#                </div>#}
-{##}
-{#                <div class="card mb-4">#}
-{#                    <div class="card-body">#}
-{#                        <h3 class="card-title">Subscription Status</h3>#}
-{#                        {% if subscription %}#}
-{#                            <p>Current Plan: {{ subscription.plan.name }}</p>#}
-{#                            <p>Expires: {{ subscription.end_date }}</p>#}
-{#                        {% else %}#}
-{#                            <p>No active subscription</p>#}
-{#                            <a href="{% url 'subscription_plans' %}" class="btn btn-primary btn-sm">Subscribe Now</a>#}
-{#                        {% endif %}#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{##}
-{##}
-{##}
-{#{% endblock %}#}
-
-
 {% extends 'base.html' %}
 
 {% block title %}Dashboard - E-Music{% endblock %}
@@ -184,7 +6,7 @@
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-8">
-                <div class="card mb-4">
+                <div class="card bg-body-tertiary mb-4">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             {% if user.userprofile.profile_picture %}
@@ -206,7 +28,7 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
+                <div class="card bg-body-tertiary mb-4">
                     <div class="card-body">
                         <h3 class="card-title">Recommended for You</h3>
                         <div class="row">
@@ -234,7 +56,7 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
+                <div class="card bg-body-tertiary mb-4">
                     <div class="card-body">
                         <h3 class="card-title">Your Playlists</h3>
                         <div class="row">
@@ -258,7 +80,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card mb-4">
+                <div class="card bg-body-tertiary mb-4">
                     <div class="card-body">
                         <h3 class="card-title">Your Stats</h3>
                         <ul class="list-group list-group-flush">
@@ -275,7 +97,7 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
+                <div class="card bg-body-tertiary mb-4">
                     <div class="card-body">
                         <h3 class="card-title">Recent Activity</h3>
                         <ul class="list-group list-group-flush">
@@ -291,25 +113,7 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Notifications</h3>
-                        <ul class="list-group list-group-flush">
-                            {% for notification in notifications %}
-                                <li class="list-group-item">
-                                    {{ notification.message }}
-                                    <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
-                                </li>
-                            {% empty %}
-                                <li class="list-group-item">No new notifications</li>
-                            {% endfor %}
-                        </ul>
-                        <a href="{% url 'notifications' %}" class="btn btn-primary btn-sm mt-3">View All
-                            Notifications</a>
-                    </div>
-                </div>
-
-                <div class="card mb-4">
+                <div class="card bg-body-tertiary mb-4">
                     <div class="card-body">
                         <h3 class="card-title">Subscription Status</h3>
                         {% if subscription %}

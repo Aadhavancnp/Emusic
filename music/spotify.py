@@ -1,6 +1,5 @@
 import os
 import re
-import threading
 from functools import lru_cache
 
 import librosa
@@ -8,9 +7,9 @@ import numpy as np
 import requests
 import spotipy
 from django.conf import settings
+from django.core.cache import cache
 from sklearn.metrics.pairwise import cosine_similarity
 from spotipy.oauth2 import SpotifyOAuth
-from django.core.cache import cache
 
 
 @lru_cache(maxsize=100)
@@ -342,8 +341,15 @@ def calculate_listening_time(recently_played):
 
 
 def get_favorite_genre(sp, top_tracks):
+    cache_key = f"favorite_genre_{sp.current_user()['id']}"
+    cached_genre = cache.get(cache_key)
+    if cached_genre:
+        return cached_genre
+    if not top_tracks:
+        return None
     artists = [track['artist'] for track in top_tracks]
     artist_genres = [sp.artist(sp.search(artist, type='artist')['artists']['items'][0]['id'])['genres'] for artist in
                      artists]
     all_genres = [genre for genres in artist_genres for genre in genres]
+    cache.set(cache_key, max(set(all_genres), key=all_genres.count), 3600)  # Cache for 1 hour
     return max(set(all_genres), key=all_genres.count) if all_genres else None

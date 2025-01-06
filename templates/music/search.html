@@ -20,19 +20,20 @@
         <div class="row mt-4">
             {% for track in tracks %}
                 <div class="col-md-4 mb-3">
-                    <div class="card">
+                    <div class="card bg-body-tertiary">
                         <img src="{{ track.image_url }}" class="card-img-top" alt="{{ track.name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ track.name }}</h5>
                             <p class="card-text">{{ track.artist }}</p>
-                            <p class="card-text"><small class="text-muted">{{ track.album }} ({{ track.year }})</small>
+                            <p class="card-text"><small class="text-body-secondary">{{ track.album }}
+                                ({{ track.year }})</small>
                             </p>
                             <a href="{% url 'track_detail' track.id %}" class="btn btn-primary">View Details</a>
                         </div>
                     </div>
                 </div>
             {% empty %}
-                <p>No tracks found.</p>
+                <p class="text-body-secondary">No tracks found.</p>
             {% endfor %}
         </div>
     </div>

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -69,14 +70,26 @@ def settings(request):
         form = UserPreferencesForm(request.POST)
         if form.is_valid():
             # Save preferences to user's session or database
-            request.session['theme'] = form.cleaned_data['theme']
+            theme = request.POST.get('theme')
+            if theme in ['light', 'dark']:
+                request.user.userprofile.theme_preference = theme
+                request.user.userprofile.save()
             request.session['language'] = form.cleaned_data['language']
             return redirect('settings')
     else:
         # Load current preferences
         initial_data = {
-            'theme': request.session.get('theme', 'light'),
             'language': request.session.get('language', 'en'),
         }
         form = UserPreferencesForm(initial=initial_data)
     return render(request, 'users/settings.html', {'form': form})
+
+
+@login_required
+def change_theme(request):
+    if request.method == 'POST':
+        theme = request.POST.get('theme')
+        if theme in ['light', 'dark']:
+            request.user.userprofile.theme_preference = theme
+            request.user.userprofile.save()
+    return JsonResponse({'status': 'success'})

@@ -36,6 +36,7 @@
                         <a href="{% url 'home' %}" class="btn btn-outline-light me-lg-2 m-sm-1 m-lg-0">Home</a>
                         <a href="{% url 'about' %}" class="btn btn-outline-light me-lg-2 m-sm-1 m-lg-0">About</a>
                         <a href="{% url 'contact' %}" class="btn btn-outline-light me-lg-2 m-sm-1 m-lg-0">Contact</a>
+                        <a href="{% url 'faq' %}" class="btn btn-outline-light me-lg-2">FAQ</a>
                         <a href="{% url 'login' %}" class="btn btn-outline-light me-lg-2 m-sm-1 m-lg-0">Login</a>
                         <a href="{% url 'signup' %}" class="btn btn-outline-light m-sm-1 m-lg-0">Sign Up</a>
                     {% endif %}
@@ -64,6 +65,35 @@
 </footer>
 {% block extra_js %}
 {% endblock %}
+<script>
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        localStorage.setItem('theme', theme);
+
+        fetch('{% url "change_theme" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: `theme=${theme}`
+        });
+    }
+
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) {
+        setTheme(storedTheme);
+    } else {
+        setTheme('{{ user.userprofile.theme_preference }}');
+    }
+
+    const themeSelect = document.getElementById('theme');
+    if (themeSelect) {
+        themeSelect.addEventListener('change', (e) => {
+            setTheme(e.target.value);
+        });
+    }
+</script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>

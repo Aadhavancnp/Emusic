@@ -25,7 +25,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('subscription/', include('subscription.urls')),
     path('music/', include('music.urls')),
-    path('notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:

@@ -45,11 +45,11 @@ class UserProfileForm(forms.ModelForm):
 
 
 class UserPreferencesForm(forms.Form):
-    THEME_CHOICES = [
-        ('light', 'Light'),
-        ('dark', 'Dark'),
-    ]
-    theme = forms.ChoiceField(choices=THEME_CHOICES)
+    # THEME_CHOICES = [
+    #     ('light', 'Light'),
+    #     ('dark', 'Dark'),
+    # ]
+    # theme = forms.ChoiceField(choices=THEME_CHOICES)
     language = forms.ChoiceField(choices=[('en', 'English'), ('es', 'Spanish'), ('fr', 'French')])
 
     def __init__(self, *args, **kwargs):

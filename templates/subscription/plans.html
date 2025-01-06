@@ -1,40 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="display-4 mb-4">Choose Your Subscription Plan</h1>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for plan in plans %}
-        <div class="col">
-            <div class="card h-100 {% if user_subscription.plan == plan %}border-primary{% endif %}">
-                <div class="card-header bg-{% if plan.name == 'Free' %}light{% elif plan.name == 'Pro' %}info{% else %}warning{% endif %} text-{% if plan.name == 'Free' %}dark{% else %}white{% endif %}">
-                    <h2 class="card-title h4 mb-0">{{ plan.name }}</h2>
+    <div class="container py-5">
+        <h1 class="display-4 mb-4">Choose Your Subscription Plan</h1>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for plan in plans %}
+                <div class="col">
+                    <div class="card h-100 {% if user_subscription.plan == plan %}border-primary{% endif %}">
+                        <div class="card-header bg-{% if plan.name == 'Free' %}light{% elif plan.name == 'Pro' %}info{% else %}warning{% endif %} text-{% if plan.name == 'Free' %}dark{% else %}white{% endif %}">
+                            <h2 class="card-title h4 mb-0">{{ plan.name }}</h2>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-subtitle mb-2 text-muted">${{ plan.price }}/month</h3>
+                            <p class="card-text">{{ plan.description }}</p>
+                            <ul class="list-group list-group-flush mb-3">
+                                {% for feature in plan.features_list %}
+                                    <li class="list-group-item">{{ feature }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            {% if user_subscription.plan == plan %}
+                                <button class="btn btn-primary w-100" disabled>Current Plan</button>
+                            {% else %}
+                                <a href="{% url 'subscribe' plan.id %}" class="btn btn-outline-primary w-100">
+                                    {% if plan.name == 'Free' %}
+                                        Switch to Free
+                                    {% else %}
+                                        Subscribe
+                                    {% endif %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h3 class="card-subtitle mb-2 text-muted">${{ plan.price }}/month</h3>
-                    <p class="card-text">{{ plan.description }}</p>
-                    <ul class="list-group list-group-flush mb-3">
-                        {% for feature in plan.features_list %}
-                        <li class="list-group-item">{{ feature }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="card-footer">
-                    {% if user_subscription.plan == plan %}
-                    <button class="btn btn-primary w-100" disabled>Current Plan</button>
-                    {% else %}
-                    <a href="{% url 'subscribe' plan.id %}" class="btn btn-outline-primary w-100">
-                        {% if plan.name == 'Free' %}
-                        Switch to Free
-                        {% else %}
-                        Subscribe
-                        {% endif %}
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-</div>
 {% endblock %}
