@@ -3,33 +3,36 @@
 {% block title %}Profile - E-Music{% endblock %}
 
 {% block content %}
-    <div class="container py-5">
-        <h2 class="mb-4">Edit Profile</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile Picture"
-                     class="img-fluid rounded-circle mb-3"
-                     style="width: 12rem; height: 12rem">
-            </div>
-            <div class="col-md-8">
-                {{ profile_form.media }}
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% for field in profile_form %}
-                        <div class="mb-3">
-                            {{ field.label_tag }}
-                            {{ field }}
-                            {% if field.help_text %}
-                                <small class="form-text text-muted">{{ field.help_text }}</small>
-                            {% endif %}
-                            {% for error in field.errors %}
-                                <p class="text-danger">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
+    <div class="container d-flex py-5">
+        <div class="col">
+            <h2 class="mb-4 row">Edit Profile</h2>
+            {% if user.userprofile.profile_picture %}
+                <img src="{{ user.userprofile.profile_picture.url }}" class="img-fluid rounded-circle mb-3"
+                     style="width: 12rem; height: 12rem" alt="Profile Picture">
+            {% else %}
+                <img src="/media/profile_pics/default.jpg" class="img-fluid rounded-circle mb-3"
+                     style="width: 12rem; height: 12rem" alt="Default Profile Picture">
+            {% endif %}
         </div>
+        <div class="col-md-8">
+            {{ profile_form.media }}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in profile_form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
     </div>
 {% endblock %}

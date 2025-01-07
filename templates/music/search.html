@@ -1,23 +1,37 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Search - E-Music{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/search_animations.css' %}">
+{% endblock %}
 
 {% block content %}
     <div class="container mt-4">
         <h1 class="display-4 mb-4">Search Tracks</h1>
         <form method="get" action="{% url 'search' %}" class="mb-4">
             <div class="input-group">
-                <input type="text" name="q" value="{{ query }}" class="form-control"
+                <input type="text" name="q" id="search-input" value="{{ query }}" class="form-control"
                        placeholder="Search for tracks...">
                 <button type="submit" class="btn btn-primary">Search</button>
+                <button type="button" id="voice-search-btn" class="btn btn-secondary">
+                    <i class="fas fa-microphone"></i>
+                </button>
             </div>
         </form>
+
+        <div id="voice-animation" class="voice-animation">
+            <div class="voice-circle"></div>
+            <div class="voice-circle"></div>
+            <div class="voice-circle"></div>
+        </div>
 
         {% if query %}
             <h2>Search Results for "{{ query }}"</h2>
         {% endif %}
 
-        <div class="row mt-4">
+        <div class="row mt-4" id="search-results">
             {% for track in tracks %}
                 <div class="col-md-4 mb-3">
                     <div class="card bg-body-tertiary">
@@ -37,5 +51,9 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/voice_search.js' %}"></script>
 {% endblock %}
 
