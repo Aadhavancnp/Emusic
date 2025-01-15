@@ -1,4 +1,11 @@
-db.*
+.cache
+.DS_Store
+*.pyc
+*.sqlite3
+*.log
+*.swp
+.venv/
+.idea/
 __pycache__/
 migrations/
-.cache
+media/
