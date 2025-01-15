@@ -10,6 +10,8 @@ def duration_format(milliseconds):
     if not milliseconds:
         return "0:00"
 
+    milliseconds = milliseconds.total_seconds() * 1000
+
     # Convert milliseconds to seconds
     seconds = math.floor(milliseconds / 1000)
 

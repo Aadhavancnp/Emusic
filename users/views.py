@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 
+from music.spotify import get_spotify_client
 from .forms import SignUpForm, LoginForm, UserProfileForm, UserPreferencesForm
 from .models import UserActivity
 
@@ -17,8 +18,10 @@ def signup(request):
             user.userprofile.profile_picture = form.cleaned_data.get('profile_picture')
             user.userprofile.save()
             login(request, user)
+            sp = get_spotify_client(request).auth_manager.get_authorize_url()
             messages.success(request, 'Account created successfully. Welcome to E-Music!')
-            return redirect('dashboard')
+            # return redirect('dashboard')
+            return redirect(sp)
     else:
         form = SignUpForm()
     return render(request, 'users/signup.html', {'form': form})
@@ -30,8 +33,10 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            sp = get_spotify_client(request).auth_manager.get_authorize_url()
             messages.success(request, 'You have successfully logged in.')
-            return redirect('dashboard')
+            # return redirect('dashboard')
+            return redirect(sp)
     else:
         form = LoginForm()
     return render(request, 'users/login.html', {'form': form})

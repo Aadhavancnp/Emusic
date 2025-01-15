@@ -1,10 +1,8 @@
 from datetime import timedelta
-
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils import timezone
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from users.models import CustomUser
 
 
@@ -31,10 +29,16 @@ class Subscription(models.Model):
 
 @receiver(post_save, sender=CustomUser)
 def create_user_subscription(sender, instance, created, **kwargs):
-    if created:
-        free_plan = SubscriptionPlan.objects.get(name='Free')
-        Subscription.objects.create(
-            user=instance,
-            plan=free_plan,
-            end_date=timezone.now() + timedelta(days=free_plan.duration_days)
-        )
+    # Check if user has no subscription
+    try:
+        Subscription.objects.get(user=instance)
+    except Subscription.DoesNotExist:
+        try:
+            free_plan = SubscriptionPlan.objects.get(name='Free')
+            Subscription.objects.create(
+                user=instance,
+                plan=free_plan,
+                end_date=timezone.now() + timedelta(days=free_plan.duration_days)
+            )
+        except SubscriptionPlan.DoesNotExist:
+            pass

@@ -1,13 +1,12 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import cache_page
+from django.shortcuts import render, redirect
 
 from core.forms import ContactForm
 from core.models import FAQItem
-from music.models import Playlist
+from music.models import Playlist, Track
 from music.spotify import get_recommendations, get_spotify_client, get_user_playlists, get_user_top_tracks, \
-    get_user_recently_played, calculate_listening_time, get_favorite_genre, search_jiosaavn
+    get_user_recently_played, calculate_listening_time, get_favorite_genre
 from subscription.models import Subscription
 from users.models import UserActivity
 
@@ -43,36 +42,27 @@ def dashboard(request):
     user = request.user
     sp = get_spotify_client(request)
 
-    playlists = get_user_playlists(sp)
+    get_user_playlists(sp, request)
     top_tracks = get_user_top_tracks(sp)
     recently_played = get_user_recently_played(sp)
 
-    # Store playlists in the database
-    for playlist in playlists:
-        Playlist.objects.update_or_create(
-            user=user,
-            spotify_id=playlist['id'],
-            defaults={'name': playlist['name']}
-        )
+    recommendation_ids = get_recommendations(recently_played[0]['id'], top_tracks + recently_played)
+    recommendation_ids = list({track['id']: track for track in recommendation_ids}.values())
+    recommended_tracks = [Track.objects.get(spotify_id=track['id']) for track in recommendation_ids]
 
-    recently_played_jiosaavn = search_jiosaavn(recently_played[0]['name'])
-    recommended_songs = get_recommendations(recently_played_jiosaavn[0]['id'], top_tracks + recently_played)
-    listening_time = calculate_listening_time(recently_played)
+    listening_time = calculate_listening_time(sp, recently_played)
     favorite_genre = get_favorite_genre(sp, top_tracks)
-
     recent_activities = UserActivity.objects.filter(user=user).order_by('-timestamp')[:5]
     subscription = Subscription.objects.filter(user=user).first()
     user_playlists = Playlist.objects.filter(user=user)
 
-    recommended_songs = list({v['id']: v for v in recommended_songs}.values())
     context = {
-        'recommended_songs': recommended_songs,
+        'recommended_tracks': recommended_tracks,
         'recent_activities': recent_activities,
         'subscription': subscription,
-        'playlists': playlists,
         'user_playlists': user_playlists,
         'listening_time': listening_time,
         'favorite_genre': favorite_genre,
-        'playlist_count': len(playlists),
+        'playlist_count': len(user_playlists),
     }
     return render(request, 'core/dashboard.html', context)

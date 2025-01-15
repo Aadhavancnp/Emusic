@@ -1,128 +1,161 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Dashboard - E-Music{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card bg-body-tertiary mb-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            {% if user.userprofile.profile_picture %}
-                                <img src="{{ user.userprofile.profile_picture.url }}"
-                                     class="card-img-top rounded-circle"
-                                     style="width: 6rem; height: 6rem"
-                                     alt="{{ user.username }}'s profile picture">
-                            {% else %}
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
-                                     style="width: 4rem; height: 4rem; font-size: 2rem;">
-                                    {{ user.username|make_list|first|upper }}
+    <div class="dashboard-container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-8 main-content">
+                    <div class="welcome-section mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    {% if user.userprofile.profile_picture %}
+                                        <img src="{{ user.userprofile.profile_picture.url }}"
+                                             class="profile-picture rounded-circle"
+                                             alt="{{ user.username }}'s profile picture">
+                                    {% else %}
+                                        <div class="profile-picture-placeholder">
+                                            {{ user.username|make_list|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="ms-3 pt-2">
+                                        <h2 class="welcome-title">Welcome back, {{ user.username }}!</h2>
+                                        <p class="welcome-subtitle">Ready to discover new music?</p>
+                                    </div>
                                 </div>
-                            {% endif %}
-                            <div class="ms-3">
-                                <h2 class="card-title">Welcome, {{ user.username }}!</h2>
-                                <p class="card-text">Here's your personalized music dashboard.</p>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card bg-body-tertiary mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Recommended for You</h3>
+                    <div class="recommendations-section mb-4">
+                        <h3 class="section-title">Recommended for You</h3>
                         <div class="row">
-                            {% for song in recommended_songs %}
+                            {% for track in recommended_tracks %}
                                 <div class="col-md-4 mb-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ song.name }}</h5>
+                                    <div class="card track-card h-100">
+                                        <img src="{{ track.image_url }}" class="card-img-top" alt="{{ track.title }}">
+                                        <div class="card-body d-flex flex-column">
+                                            <h5 class="card-title">{{ track.title }}</h5>
                                             <p class="card-text">
-                                                {{ song.artist }}
+                                                {{ track.artists.all|join:", " }}
                                                 <br/>
-                                                <span>{{ song.album }}</span>
+                                                <small class="text-muted">{{ track.album }}</small>
                                             </p>
-                                            <a href="{% url 'track_redirection' song.name %}"
-                                               class="btn btn-primary btn-sm">View
-                                                Details</a>
-                                            <button class="btn btn-secondary btn-sm mt-2"
-                                                    onclick="addToPlaylist('{{ song.id }}')">Add to Playlist
-                                            </button>
+                                            <div class="mt-auto">
+                                                <a href="{% url 'track_detail' track.spotify_id %}"
+                                                   class="btn btn-primary btn-sm">View Details</a>
+                                                <button class="btn btn-outline-secondary btn-sm"
+                                                        onclick="addToPlaylist('{{ track.spotify_id }}')">
+                                                    <i class="fa-solid fa-plus"></i> Add to Playlist
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
-                </div>
 
-                <div class="card bg-body-tertiary mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Your Playlists</h3>
+                    <div class="playlists-section mb-4">
+                        <h3 class="section-title">Your Playlists</h3>
                         <div class="row">
                             {% for playlist in user_playlists %}
                                 <div class="col-md-4 mb-3">
-                                    <div class="card">
-                                        <div class="card-body">
+                                    <div class="card playlist-card h-100">
+                                        <img src="{{ playlist.image_url }}" class="card-img-top"
+                                             alt="{{ playlist.name }}">
+                                        <div class="card-body d-flex flex-column">
                                             <h5 class="card-title">{{ playlist.name }}</h5>
+                                            <p class="card-text">{{ playlist.track_count }} tracks</p>
                                             <a href="{% url 'playlist_detail' playlist.spotify_id %}"
-                                               class="btn btn-primary btn-sm">View Playlist</a>
+                                               class="btn btn-primary btn-sm mt-auto">View Playlist</a>
                                         </div>
                                     </div>
                                 </div>
                             {% empty %}
-                                <p>No playlists yet.</p>
+                                <div class="col-12">
+                                    <p class="text-muted">No playlists yet. Start creating your music collections!</p>
+                                </div>
                             {% endfor %}
                         </div>
-                        <a href="{% url 'create_playlist' %}" class="btn btn-success mt-3">Create New Playlist</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card bg-body-tertiary mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Your Stats</h3>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <strong>Listening Time:</strong> {{ listening_time|floatformat:2 }} hours
-                            </li>
-                            <li class="list-group-item">
-                                <strong>Favorite Genre:</strong> {{ favorite_genre|default:"Not enough data" }}
-                            </li>
-                            <li class="list-group-item">
-                                <strong>Playlist Count:</strong> {{ playlist_count }}
-                            </li>
-                        </ul>
+                        <a href="{% url 'create_playlist' %}" class="btn btn-success mt-3">
+                            <i class="fa-solid fa-plus"></i> Create New Playlist
+                        </a>
                     </div>
                 </div>
 
-                <div class="card bg-body-tertiary mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Recent Activity</h3>
-                        <ul class="list-group list-group-flush">
-                            {% for activity in recent_activities %}
-                                <li class="list-group-item">
-                                    {{ activity.description }}
-                                    <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <a href="{% url 'user_activities' %}" class="btn btn-primary btn-sm mt-3">View All
-                            Activities</a>
+                <div class="col-lg-4 sidebar">
+                    <div class="stats-section mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Your Stats</h3>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><i class="fa-solid fa-clock"></i> Listening Time</span>
+                                        <span class="badge bg-primary rounded-pill">{{ listening_time|floatformat:2 }} hours</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><i class="fa-solid fa-music"></i> Favorite Genre</span>
+                                        <span class="badge bg-secondary rounded-pill">{{ favorite_genre|default:"Not enough data" }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span><img src="{% static 'img/playlist.svg' %}"
+                                                   style="width: 25px;height: 25px;filter: brightness(0);"
+                                                   id="playlist_icon"
+                                                   alt="Playlist"/> Playlist Count</span>
+                                        <span class="badge bg-success rounded-pill">{{ playlist_count }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="card bg-body-tertiary mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Subscription Status</h3>
-                        {% if subscription %}
-                            <p>Current Plan: {{ subscription.plan.name }}</p>
-                            <p>Expires: {{ subscription.end_date }}</p>
-                        {% else %}
-                            <p>No active subscription</p>
-                            <a href="{% url 'subscription_plans' %}" class="btn btn-primary btn-sm">Subscribe Now</a>
-                        {% endif %}
+                    <div class="activity-section mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Recent Activity</h3>
+                                <ul class="list-group list-group-flush activity-list">
+                                    {% for activity in recent_activities %}
+                                        <li class="list-group-item">
+                                            <i class="fa-solid fa-clock-rotate-left"></i> {{ activity.description }}
+                                            <small class="text-muted d-block">{{ activity.timestamp|timesince }}
+                                                ago</small>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <a href="{% url 'user_activities' %}" class="btn btn-outline-primary btn-sm mt-3">
+                                    View All Activities
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subscription-section mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Subscription Status</h3>
+                                {% if subscription %}
+                                    <div class="subscription-info">
+                                        <p><i class="fa-solid fa-crown"></i> Current Plan:
+                                            <strong>{{ subscription.plan.name }}</strong></p>
+                                        <p><i class="fa-solid fa-calendar-days"></i>
+                                            Expires: {{ subscription.end_date }}</p>
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted"><i class="fa-solid fa-circle-exclamation"></i> No active
+                                        subscription</p>
+                                    <a href="{% url 'subscription_plans' %}" class="btn btn-primary btn-sm">Subscribe
+                                        Now</a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -153,44 +186,9 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
 
 {% block extra_js %}
-    <script>
-        let currentTrackId = '';
-
-        function addToPlaylist(trackId) {
-            currentTrackId = trackId;
-            $('#addToPlaylistModal').modal('show');
-        }
-
-        function confirmAddToPlaylist() {
-            const playlistId = document.getElementById('playlistSelect').value;
-
-            fetch('{% url "add_to_playlist" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `track_id=${currentTrackId}&playlist_id=${playlistId}`
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert('Track added to playlist successfully!');
-                    } else {
-                        alert('Failed to add track to playlist. Please try again.');
-                    }
-                    $('#addToPlaylistModal').modal('hide');
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
-                    $('#addToPlaylistModal').modal('hide');
-                });
-        }
-    </script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
 

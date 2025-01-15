@@ -1,20 +1,47 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}User Activities - E-Music{% endblock %}
+{% block title %}Your Activity History - E-Music{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/user_activities.css' %}">
+{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <h2>Your Activities</h2>
-        <div class="list-group mt-3">
-            {% for activity in activities %}
-                <div class="list-group-item">
-                    <h5 class="mb-1">{{ activity.activity_type|title }}</h5>
-                    <p class="mb-1">{{ activity.description }}</p>
-                    <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
-                </div>
-            {% empty %}
-                <div class="list-group-item">No activities recorded yet.</div>
-            {% endfor %}
+    <div class="activities-container">
+        <div class="container">
+            <h1 class="page-title">Your Activity History</h1>
+            <div class="activity-timeline">
+                {% for activity in activities %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            {% if activity.activity_type == 'listen' %}
+                                <i class="fa-solid fa-headphones"></i>
+                            {% elif activity.activity_type == 'search' %}
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            {% elif activity.activity_type == 'view_artist' %}
+                                <img src="{% static 'img/artist.svg' %}"
+                                     alt="Artist"/>
+                            {% elif activity.activity_type == 'add_to_playlist' or activity.activity_type == 'create_playlist' or activity.activity_type == 'view_playlist' %}
+                                <img src="{% static 'img/playlist.svg' %}"
+                                     alt="Playlist"/>
+                            {% else %}
+                                <i class="fa-solid fa-music"></i>
+                            {% endif %}
+                        </div>
+                        <div class="activity-content">
+                            <h3 class="activity-title">{{ activity.activity_type|title }}</h3>
+                            <p class="activity-description">{{ activity.description }}</p>
+                            <span class="activity-time">{{ activity.timestamp|timesince }} ago</span>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="no-activity">
+                        <i class="fa-solid fa-music no-activity-icon"></i>
+                        <p>No activities recorded yet. Start exploring music to see your activity here!</p>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
