@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -37,7 +39,7 @@ def contact_us(request):
 
 
 @login_required(login_url="/users/login/")
-# @cache_page(60 * 15)
+# @cache_page(900)
 def dashboard(request):
     user = request.user
     sp = get_spotify_client(request)
@@ -45,6 +47,12 @@ def dashboard(request):
     get_user_playlists(sp, request)
     top_tracks = get_user_top_tracks(sp)
     recently_played = get_user_recently_played(sp)
+
+    most_repeat = Counter([track['id'] for track in recently_played]).most_common(1)[0][0]
+    most_repeat = [track for track in recently_played if track['id'] == most_repeat][0]
+
+    recently_played = list({track['id']: track for track in recently_played}.values())
+    recently_played.append(most_repeat)
 
     recommendation_ids = get_recommendations(recently_played[0]['id'], top_tracks + recently_played)
     recommendation_ids = list({track['id']: track for track in recommendation_ids}.values())

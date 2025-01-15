@@ -87,7 +87,7 @@ def track_detail(request, track_id):
                for artist in track.artists.all()]
 
     query = f"{track.title} {"".join([artist.name for artist in track.artists.all()])} {track.album}".strip()
-    
+
     search_current_track = search_jiosaavn(query)
     if search_current_track:
         track_details = get_track_details_jiosaavn(search_current_track[0]['id'])
@@ -135,7 +135,7 @@ def artist_detail(request, artist_name):
 
 
 @login_required
-@cache_page(3600)
+# @cache_page(3600)
 def playlist_detail(request, playlist_id):
     sp = get_spotify_client(request)
 
