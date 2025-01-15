@@ -35,10 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core.apps.CoreConfig',
-    'music.apps.MusicConfig',
-    'users.apps.UsersConfig',
-    'subscription.apps.SubscriptionConfig',
+    'core',
+    'music',
+    'users',
+    'subscription',
     "bootstrap_datepicker_plus"
 ]
 
